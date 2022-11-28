@@ -1,0 +1,52 @@
+{
+    "meta_parameters": {
+      "target_trip_duration": 9,
+      "actual_trip_duration": 965.0,
+      "testnumber": 18.6573,
+      "workflow": "DELAYED",
+      "transport_mode": "DRIVING",
+      "combined_zones": [
+        [
+          "Melbourne Metro",
+          "VIC Mornington Peninsula",
+          "VIC Outer Melbourne East",
+          "VIC Outer Melbourne West",
+          "Melbourne Metro Inner"
+        ],
+        [
+          "VIC Geelong",
+          "VIC Geelong Regional - Lorne"
+        ],
+        [
+          "VIC Gippsland",
+          "VIC Sale/Lakes Entrance",
+          "VIC Gippsland South"
+        ],
+        [
+          "VIC Shepparton",
+          "VIC Regional North - Echuca",
+          "VIC Regional North - Yarrawonga"
+        ]
+      ],
+      "special_time_windows": [
+        "08:00-18:00",
+        "07:00-18:00",
+        "09:00-16:00",
+        "07:00-17:00"
+      ]
+    },
+    "shifts": [
+      {
+        "id": "day",
+        "start": "08:00",
+        "end": "17:00",
+        "customerServiceTime": 2.18e-10
+      },
+      {
+        "id": "night",
+        "start": "08:00",
+        "end": "17:00",
+        "customerServiceTime": 400
+      }
+    ]
+  }
