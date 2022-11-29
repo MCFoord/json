@@ -30,6 +30,7 @@ class lexer
         token_type string_token();
         token_type number_token();
         token_type literal_token(std::string literal, token_type token);
+        void token_buffer_add(char c);
 
         //for testing, and running a full file without parsing
         std::vector<token_type> full_token_scan();
@@ -39,6 +40,7 @@ class lexer
         int32_t line_character_pos;
         int32_t line_count;
         char current_char;
+        std::string token_buffer;
 };
 
 #endif
