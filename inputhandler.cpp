@@ -11,7 +11,7 @@ file_input_handler::file_input_handler(std::string file_name)
 
 char file_input_handler::get_next_char()
 {
-    this->src.get();
+    return this->src.get();
 }
 
 string_input_handler::string_input_handler(std::string str)
@@ -21,5 +21,5 @@ string_input_handler::string_input_handler(std::string str)
 
 char string_input_handler::get_next_char()
 {
-    this->src.get();
+    return this->src.get();
 }

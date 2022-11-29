@@ -10,7 +10,7 @@ class input_handler
     public:
         virtual char get_next_char()
         {
-            return;
+            return std::char_traits<char>::eof();
         };
 };
 
