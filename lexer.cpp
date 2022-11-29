@@ -41,11 +41,11 @@ lexer::token_type lexer::next_token()
         break;
 
     case 'f':
-        return literal_token("false", token_type::TOKEN_TRUE);
+        return literal_token("false", token_type::TOKEN_FALSE);
         break;
 
     case 'n':
-        return literal_token("null", token_type::TOKEN_TRUE);
+        return literal_token("null", token_type::TOKEN_NULL);
         break;
 
     case '0':
@@ -77,6 +77,73 @@ void lexer::skip_whitespace()
     {
         next_char();
     }
+}
+
+lexer::token_type lexer::string_token()
+{
+    while (current_char != std::char_traits<char>::eof())
+    {
+        switch (next_char())
+        {
+            case '\"':
+                return token_type::TOKEN_STRING;
+
+            // escapes
+            case '\\':
+                switch (next_char())
+                {
+                    case '\"':
+
+                        break;
+
+                    case '\\':
+
+                        break;
+
+                    case '/':
+
+                        break;
+
+                    case 'b':
+
+                        break;
+
+                    case 'f':
+
+                        break;
+
+                    case 'n':
+
+                        break;
+
+                    case 'r':
+
+                        break;
+
+                    case 't':
+
+                        break;
+
+                    default:
+                        return token_type::TOKEN_ERROR;
+                        break;
+                }
+
+                default:
+                    return token_type::TOKEN_ERROR;
+                    break;
+        }
+    }
+}
+
+lexer::token_type lexer::number_token()
+{
+
+}
+
+lexer::token_type lexer::literal_token(std::string literal, token_type token)
+{
+
 }
 
 std::vector<lexer::token_type> full_token_scan()
