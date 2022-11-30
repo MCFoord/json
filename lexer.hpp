@@ -24,6 +24,21 @@ class lexer
             TOKEN_EOF
         };
 
+        enum number_state
+        {
+            STATE_INITIAL,
+            STATE_MINUS,
+            STATE_ZERO,
+            STATE_DIGIT_NUMBER,
+            STATE_DIGIT_FRACTION,
+            STATE_DIGIT_EXPONENT,
+            STATE_MANTISSA,
+            STATE_E,
+            STATE_PLUS_MINUS,
+            STATE_FINAL,
+            STATE_ERROR
+        };
+
         token_type next_token();
         void skip_whitespace();
         char next_char();
@@ -31,6 +46,16 @@ class lexer
         token_type number_token();
         token_type literal_token(std::string literal, token_type token);
         void token_buffer_add(char c);
+
+        number_state number_state_initial();
+        number_state number_state_minus();
+        number_state number_state_zero();
+        number_state number_state_digit_number();
+        number_state number_state_digit_fraction();
+        number_state number_state_digit_exponent();
+        number_state number_state_mantissa();
+        number_state number_state_plus_minus();
+        number_state number_state_e();
 
         //for testing, and running a full file without parsing
         std::vector<token_type> full_token_scan();

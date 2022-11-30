@@ -231,6 +231,7 @@ lexer::token_type lexer::string_token()
             case 0x7E:
             case 0x7F:
                 token_buffer.push_back(current_char);
+                break;
 
             default:
                 return token_type::TOKEN_ERROR;
@@ -244,7 +245,285 @@ lexer::token_type lexer::string_token()
 
 lexer::token_type lexer::number_token()
 {
+    number_state state = number_state::STATE_INITIAL;
 
+    switch (state)
+    {
+        case number_state::STATE_INITIAL:
+            state = number_state_initial();
+            break;
+        case number_state::STATE_MINUS:
+            state = number_state_minus();
+            break;
+
+        case number_state::STATE_ZERO:
+            state = number_state_zero();
+            break;
+
+        case number_state::STATE_DIGIT_NUMBER:
+            state = number_state_digit_number();
+            break;
+
+        case number_state::STATE_DIGIT_FRACTION:
+            state = number_state_digit_fraction();
+            break;
+
+        case number_state::STATE_DIGIT_EXPONENT:
+            state = number_state_digit_exponent();
+            break;
+
+        case number_state::STATE_MANTISSA:
+            state = number_state_mantissa();
+            break;
+
+        case number_state::STATE_E:
+            state = number_state_e();
+            break;
+
+        case number_state::STATE_PLUS_MINUS:
+            state = number_state_plus_minus();
+            break;
+
+        case number_state::STATE_FINAL:
+
+            break;
+            
+        case number_state::STATE_ERROR:
+
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_initial()
+{
+    switch (current_char)
+    {
+        case '-':
+            return number_state_minus();
+            break;
+
+        case '0':
+            return number_state_zero();
+            break;
+
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state_digit_number();
+            break;
+
+        default:
+            return number_state::STATE_ERROR;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_minus()
+{
+    switch (next_token())
+    {
+        case '0':
+            return number_state_zero();
+            break;
+
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state_digit_number();
+            break;
+
+        default:
+            return number_state::STATE_ERROR;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_zero()
+{
+    switch (next_token())
+    {
+        case '.':
+            return number_state_mantissa();
+            break;
+
+        case 'e':
+        case 'E':
+            return number_state_e();
+            break;
+        
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state::STATE_ERROR;
+            break;
+
+        default:
+            return number_state::STATE_FINAL;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_digit_number()
+{
+    switch (next_token())
+    {
+        case '.':
+            return number_state_mantissa();
+            break;
+        
+        case 'e':
+        case 'E':
+            return number_state_e();
+            break;
+
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state_digit_number();
+            break;
+        
+        default:
+            return number_state::STATE_FINAL;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_digit_fraction()
+{
+    switch (next_token())
+    {
+        case 'e':
+        case 'E':
+            return number_state_e();
+            break;
+
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state_digit_fraction();
+            break;
+        
+        default:
+            return number_state::STATE_FINAL;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_digit_exponent()
+{
+    switch (next_token())
+    {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state_digit_exponent();
+            break;
+        
+        default:
+            return number_state::STATE_FINAL;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_mantissa()
+{
+    switch (next_token())
+    {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state_digit_fraction();
+            break;
+
+        default:
+            return number_state::STATE_ERROR;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_e()
+{
+    switch (next_token())
+    {
+        case '+':
+        case '-':
+            return number_state_plus_minus();
+            break;
+
+        default:
+            return number_state::STATE_ERROR;
+            break;
+    }
+}
+
+lexer::number_state lexer::number_state_plus_minus()
+{
+    switch (next_token())
+    {
+        case '0':
+        case '1':
+        case '2':
+        case '3':
+        case '4':
+        case '5':
+        case '6':
+        case '7':
+        case '8':
+        case '9':
+            return number_state_digit_exponent();
+            break;
+        
+        default:
+            return number_state::STATE_ERROR;
+            break;
+    }
 }
 
 lexer::token_type lexer::literal_token(std::string literal, token_type token)
