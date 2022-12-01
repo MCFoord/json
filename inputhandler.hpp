@@ -5,29 +5,30 @@
 #include <sstream>
 #include <string>
 
-class input_handler
+class Input_handler
 {
     public:
         virtual char get_next_char()
         {
             return std::char_traits<char>::eof();
         };
+        virtual ~Input_handler() = default;
 };
 
-class file_input_handler: public input_handler
+class File_input_handler: public Input_handler
 {   
     public:
-        file_input_handler(std::string file_name);
-        char get_next_char();
+        File_input_handler(std::string file_name);
+        char get_next_char() override;
     private:
         std::ifstream src;
 };
 
-class string_input_handler: public input_handler
+class String_input_handler: public Input_handler
 {   
     public:
-        string_input_handler(std::string str);
-        char get_next_char();
+        String_input_handler(std::string str);
+        char get_next_char() override;
     private:
         std::istringstream src;
 };
