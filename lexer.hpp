@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <istream>
+#include <string>
 #include "inputhandler.hpp"
 
 class Lexer
@@ -68,6 +69,7 @@ class Lexer
         char current_char;
         std::string token_buffer;
         bool current_char_unprocessed;
+        std::vector<std::string> token_values;
 };
 
-#endif
+#endif //LEXER

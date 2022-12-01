@@ -33,4 +33,4 @@ class String_input_handler: public Input_handler
         std::istringstream src;
 };
 
-#endif
+#endif //INPUTHANDLER
