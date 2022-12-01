@@ -1,13 +1,33 @@
-#include "lexer.hpp"
-#include "inputhandler.hpp"
 #include <vector>
 #include <istream>
 #include <iostream>
 #include <string>
+#include "lexer.hpp"
+#include "inputhandler.hpp"
 
-lexer::token_type lexer::next_token()
+Lexer::Lexer(Input_handler* input)
 {
-    switch (next_char())
+    this->input = input;
+    line_character_pos = 0;
+    line_count = 0;
+    current_char_unprocessed = false;
+}
+
+
+Lexer::token_type Lexer::next_token()
+{
+    if (!current_char_unprocessed)
+    {
+        next_char();
+    }
+    else
+    {
+        current_char_unprocessed = false;
+    }
+
+    skip_whitespace();
+
+    switch (current_char)
     {
     case '[':
         return token_type::TOKEN_BEGIN_ARRAY;
@@ -71,7 +91,7 @@ lexer::token_type lexer::next_token()
     }
 }
 
-void lexer::skip_whitespace()
+void Lexer::skip_whitespace()
 {
     while(current_char == ' ' || current_char == '\n' || current_char == '\t' || current_char == '\r')
     {
@@ -80,7 +100,7 @@ void lexer::skip_whitespace()
 }
 
 //# todo: add unicode escapes 
-lexer::token_type lexer::string_token()
+Lexer::token_type Lexer::string_token()
 {
     token_buffer.clear();
 
@@ -243,66 +263,72 @@ lexer::token_type lexer::string_token()
     return token_type::TOKEN_ERROR;
 }
 
-lexer::token_type lexer::number_token()
+Lexer::token_type Lexer::number_token()
 {
     number_state state = number_state::STATE_INITIAL;
-
-    switch (state)
+    token_buffer.clear();
+    while (true)
     {
-        case number_state::STATE_INITIAL:
-            state = number_state_initial();
-            break;
-        case number_state::STATE_MINUS:
-            state = number_state_minus();
-            break;
+        switch (state)
+        {
+            case number_state::STATE_INITIAL:
+                state = number_state_initial();
+                break;
+            case number_state::STATE_MINUS:
+                state = number_state_minus();
+                break;
 
-        case number_state::STATE_ZERO:
-            state = number_state_zero();
-            break;
+            case number_state::STATE_ZERO:
+                state = number_state_zero();
+                break;
 
-        case number_state::STATE_DIGIT_NUMBER:
-            state = number_state_digit_number();
-            break;
+            case number_state::STATE_DIGIT_NUMBER:
+                state = number_state_digit_number();
+                break;
 
-        case number_state::STATE_DIGIT_FRACTION:
-            state = number_state_digit_fraction();
-            break;
+            case number_state::STATE_DIGIT_FRACTION:
+                state = number_state_digit_fraction();
+                break;
 
-        case number_state::STATE_DIGIT_EXPONENT:
-            state = number_state_digit_exponent();
-            break;
+            case number_state::STATE_DIGIT_EXPONENT:
+                state = number_state_digit_exponent();
+                break;
 
-        case number_state::STATE_MANTISSA:
-            state = number_state_mantissa();
-            break;
+            case number_state::STATE_MANTISSA:
+                state = number_state_mantissa();
+                break;
 
-        case number_state::STATE_E:
-            state = number_state_e();
-            break;
+            case number_state::STATE_E:
+                state = number_state_e();
+                break;
 
-        case number_state::STATE_PLUS_MINUS:
-            state = number_state_plus_minus();
-            break;
+            case number_state::STATE_PLUS_MINUS:
+                state = number_state_plus_minus();
+                break;
 
-        case number_state::STATE_FINAL:
-
-            break;
-            
-        case number_state::STATE_ERROR:
-
-            break;
+            case number_state::STATE_FINAL:
+                current_char_unprocessed = true;
+                return token_type::TOKEN_NUMBER;
+                break;
+                
+            case number_state::STATE_ERROR:
+                return token_type::TOKEN_ERROR;
+                break;
+        }
     }
 }
 
-lexer::number_state lexer::number_state_initial()
+Lexer::number_state Lexer::number_state_initial()
 {
     switch (current_char)
     {
         case '-':
+            token_buffer.push_back(current_char);
             return number_state_minus();
             break;
 
         case '0':
+            token_buffer.push_back(current_char);
             return number_state_zero();
             break;
 
@@ -315,6 +341,7 @@ lexer::number_state lexer::number_state_initial()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state_digit_number();
             break;
 
@@ -324,11 +351,12 @@ lexer::number_state lexer::number_state_initial()
     }
 }
 
-lexer::number_state lexer::number_state_minus()
+Lexer::number_state Lexer::number_state_minus()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case '0':
+            token_buffer.push_back(current_char);
             return number_state_zero();
             break;
 
@@ -341,6 +369,7 @@ lexer::number_state lexer::number_state_minus()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state_digit_number();
             break;
 
@@ -350,16 +379,18 @@ lexer::number_state lexer::number_state_minus()
     }
 }
 
-lexer::number_state lexer::number_state_zero()
+Lexer::number_state Lexer::number_state_zero()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case '.':
+            token_buffer.push_back(current_char);
             return number_state_mantissa();
             break;
 
         case 'e':
         case 'E':
+            token_buffer.push_back(current_char);
             return number_state_e();
             break;
         
@@ -373,6 +404,7 @@ lexer::number_state lexer::number_state_zero()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state::STATE_ERROR;
             break;
 
@@ -382,16 +414,18 @@ lexer::number_state lexer::number_state_zero()
     }
 }
 
-lexer::number_state lexer::number_state_digit_number()
+Lexer::number_state Lexer::number_state_digit_number()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case '.':
+            token_buffer.push_back(current_char);
             return number_state_mantissa();
             break;
         
         case 'e':
         case 'E':
+            token_buffer.push_back(current_char);
             return number_state_e();
             break;
 
@@ -405,6 +439,7 @@ lexer::number_state lexer::number_state_digit_number()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state_digit_number();
             break;
         
@@ -414,12 +449,13 @@ lexer::number_state lexer::number_state_digit_number()
     }
 }
 
-lexer::number_state lexer::number_state_digit_fraction()
+Lexer::number_state Lexer::number_state_digit_fraction()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case 'e':
         case 'E':
+            token_buffer.push_back(current_char);
             return number_state_e();
             break;
 
@@ -433,6 +469,7 @@ lexer::number_state lexer::number_state_digit_fraction()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state_digit_fraction();
             break;
         
@@ -442,9 +479,9 @@ lexer::number_state lexer::number_state_digit_fraction()
     }
 }
 
-lexer::number_state lexer::number_state_digit_exponent()
+Lexer::number_state Lexer::number_state_digit_exponent()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case '0':
         case '1':
@@ -456,6 +493,7 @@ lexer::number_state lexer::number_state_digit_exponent()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state_digit_exponent();
             break;
         
@@ -465,9 +503,9 @@ lexer::number_state lexer::number_state_digit_exponent()
     }
 }
 
-lexer::number_state lexer::number_state_mantissa()
+Lexer::number_state Lexer::number_state_mantissa()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case '0':
         case '1':
@@ -479,6 +517,7 @@ lexer::number_state lexer::number_state_mantissa()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state_digit_fraction();
             break;
 
@@ -488,12 +527,13 @@ lexer::number_state lexer::number_state_mantissa()
     }
 }
 
-lexer::number_state lexer::number_state_e()
+Lexer::number_state Lexer::number_state_e()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case '+':
         case '-':
+            token_buffer.push_back(current_char);
             return number_state_plus_minus();
             break;
 
@@ -503,9 +543,9 @@ lexer::number_state lexer::number_state_e()
     }
 }
 
-lexer::number_state lexer::number_state_plus_minus()
+Lexer::number_state Lexer::number_state_plus_minus()
 {
-    switch (next_token())
+    switch (next_char())
     {
         case '0':
         case '1':
@@ -517,6 +557,7 @@ lexer::number_state lexer::number_state_plus_minus()
         case '7':
         case '8':
         case '9':
+            token_buffer.push_back(current_char);
             return number_state_digit_exponent();
             break;
         
@@ -526,7 +567,7 @@ lexer::number_state lexer::number_state_plus_minus()
     }
 }
 
-lexer::token_type lexer::literal_token(std::string literal, token_type token)
+Lexer::token_type Lexer::literal_token(std::string literal, token_type token)
 {
     for (auto& c : literal)
     {
@@ -539,20 +580,34 @@ lexer::token_type lexer::literal_token(std::string literal, token_type token)
     return token;
 }
 
-std::vector<lexer::token_type> full_token_scan()
+void Lexer::full_token_scan()
 {
+    std::vector<token_type> tokens;
+    token_type token = next_token();
 
+    tokens.push_back(token);
+
+    while (token != token_type::TOKEN_EOF && token != token_type::TOKEN_ERROR)
+    {
+        token = next_token();
+        tokens.push_back(token);
+    }
+
+    for (auto& t : tokens)
+    {
+        std::cout << t << '\n';
+    }
 }
 
-char lexer::next_char()
+char Lexer::next_char()
 {
-    current_char = input.get_next_char();
+    current_char = input->get_next_char();
     ++line_character_pos;
 
     if (current_char == '\n')
     {
         ++line_count;
-        line_character_pos = 0;
+        line_character_pos = 0; 
     }
 
     return current_char;

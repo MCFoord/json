@@ -5,7 +5,7 @@
 #include <istream>
 #include "inputhandler.hpp"
 
-class lexer
+class Lexer
 {
     public:
         enum token_type {
@@ -39,6 +39,7 @@ class lexer
             STATE_ERROR
         };
 
+        Lexer(Input_handler* input);
         token_type next_token();
         void skip_whitespace();
         char next_char();
@@ -58,14 +59,15 @@ class lexer
         number_state number_state_e();
 
         //for testing, and running a full file without parsing
-        std::vector<token_type> full_token_scan();
+        void full_token_scan();
 
     private:
-        input_handler input;
+        Input_handler* input;
         int32_t line_character_pos;
         int32_t line_count;
         char current_char;
         std::string token_buffer;
+        bool current_char_unprocessed;
 };
 
 #endif
