@@ -4,6 +4,7 @@
 #include <vector>
 #include <istream>
 #include <string>
+#include <queue>
 #include "inputhandler.hpp"
 
 class Lexer
@@ -58,9 +59,10 @@ class Lexer
         number_state number_state_mantissa();
         number_state number_state_plus_minus();
         number_state number_state_e();
-
+        
         //for testing, and running a full file without parsing
         void full_token_scan();
+        std::string debug_token_string(token_type token);
 
     private:
         Input_handler* input;
@@ -69,7 +71,7 @@ class Lexer
         char current_char;
         std::string token_buffer;
         bool current_char_unprocessed;
-        std::vector<std::string> token_values;
+        std::queue<std::string> token_values;
 };
 
 #endif //LEXER

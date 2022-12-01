@@ -2,6 +2,7 @@
 #include <istream>
 #include <iostream>
 #include <string>
+#include <iomanip>
 #include "lexer.hpp"
 #include "inputhandler.hpp"
 
@@ -91,6 +92,58 @@ Lexer::token_type Lexer::next_token()
     }
 }
 
+std::string Lexer::debug_token_string(token_type token)
+{
+    std::string value;
+    switch (token)
+    {
+        case token_type::TOKEN_BEGIN_OBJECT:
+            return "{";
+            break;
+        case token_type::TOKEN_END_OBJECT:
+            return "}";
+            break;
+        case token_type::TOKEN_BEGIN_ARRAY:
+            return "[";
+            break;
+        case token_type::TOKEN_END_ARRAY:
+            return "]";
+            break;
+        case token_type::TOKEN_NAME_SEPARATOR:
+            return ":";
+            break;
+        case token_type::TOKEN_VALUE_SEPARATOR:
+            return ",";
+            break;
+        case token_type::TOKEN_NUMBER:
+            value = token_values.front();
+            token_values.pop();
+            return value;
+            break;
+        case token_type::TOKEN_STRING:
+            value = token_values.front();
+            token_values.pop();
+            return value;
+            break;
+        case token_type::TOKEN_TRUE:
+            return "true";
+            break;
+        case token_type::TOKEN_FALSE:
+            return "false";
+            break;
+        case token_type::TOKEN_NULL:
+            return "null";
+            break;
+        case token_type::TOKEN_ERROR:
+            return "ERROR";
+            break;
+        case token_type::TOKEN_EOF:
+            return "EOF";
+            break;
+    }
+
+}
+
 void Lexer::skip_whitespace()
 {
     while(current_char == ' ' || current_char == '\n' || current_char == '\t' || current_char == '\r')
@@ -110,6 +163,7 @@ Lexer::token_type Lexer::string_token()
         {
             //valid string
             case '\"':
+                token_values.push(token_buffer);
                 return token_type::TOKEN_STRING;
                 break;
             
@@ -307,6 +361,7 @@ Lexer::token_type Lexer::number_token()
                 break;
 
             case number_state::STATE_FINAL:
+                token_values.push(token_buffer);
                 current_char_unprocessed = true;
                 return token_type::TOKEN_NUMBER;
                 break;
@@ -595,7 +650,11 @@ void Lexer::full_token_scan()
 
     for (auto& t : tokens)
     {
-        std::cout << t << '\n';
+        std::cout << std::setw(15)
+                  << debug_token_string(t)
+                  << '|'
+                  << t
+                  << '\n';
     }
 }
 
