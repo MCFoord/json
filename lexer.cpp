@@ -92,7 +92,7 @@ Lexer::token_type Lexer::next_token()
     }
 }
 
-std::string Lexer::debug_token_string(token_type token)
+std::string Lexer::debug_token_value_string(token_type token)
 {
     std::string value;
     switch (token)
@@ -141,7 +141,52 @@ std::string Lexer::debug_token_string(token_type token)
             return "EOF";
             break;
     }
+}
 
+std::string Lexer::debug_token_name_string(token_type token)
+{
+    switch (token)
+    {
+        case token_type::TOKEN_BEGIN_OBJECT:
+            return "TOKEN_BEGIN_OBJECT";
+            break;
+        case token_type::TOKEN_END_OBJECT:
+            return "TOKEN_END_OBJECT";
+            break;
+        case token_type::TOKEN_BEGIN_ARRAY:
+            return "TOKEN_BEGIN_ARRAY";
+            break;
+        case token_type::TOKEN_END_ARRAY:
+            return "TOKEN_END_ARRAY";
+            break;
+        case token_type::TOKEN_NAME_SEPARATOR:
+            return "TOKEN_NAME_SEPARATOR";
+            break;
+        case token_type::TOKEN_VALUE_SEPARATOR:
+            return "TOKEN_VALUE_SEPARATOR";
+            break;
+        case token_type::TOKEN_NUMBER:
+            return"TOKEN_NUMBER";
+            break;
+        case token_type::TOKEN_STRING:
+            return"TOKEN_STRING";
+            break;
+        case token_type::TOKEN_TRUE:
+            return "TOKEN_TRUE";
+            break;
+        case token_type::TOKEN_FALSE:
+            return "TOKEN_FALSE";
+            break;
+        case token_type::TOKEN_NULL:
+            return "TOKEN_NULL";
+            break;
+        case token_type::TOKEN_ERROR:
+            return "TOKEN_ERROR";
+            break;
+        case token_type::TOKEN_EOF:
+            return "TOKEN_EOF";
+            break;
+    }
 }
 
 void Lexer::skip_whitespace()
@@ -650,10 +695,12 @@ void Lexer::full_token_scan()
 
     for (auto& t : tokens)
     {
-        std::cout << std::setw(15)
-                  << debug_token_string(t)
-                  << '|'
-                  << t
+        std::cout << std::setw(25)
+                  << std::left
+                  << debug_token_name_string(t)
+                  << std::setw(20)
+                  << std::left
+                  << debug_token_value_string(t)
                   << '\n';
     }
 }

@@ -10,7 +10,8 @@
 class Lexer
 {
     public:
-        enum token_type {
+        enum token_type
+        {
             TOKEN_BEGIN_OBJECT,
             TOKEN_END_OBJECT,
             TOKEN_BEGIN_ARRAY,
@@ -62,7 +63,8 @@ class Lexer
         
         //for testing, and running a full file without parsing
         void full_token_scan();
-        std::string debug_token_string(token_type token);
+        std::string debug_token_name_string(token_type token);
+        std::string debug_token_value_string(token_type token);
 
     private:
         Input_handler* input;
@@ -72,6 +74,7 @@ class Lexer
         std::string token_buffer;
         bool current_char_unprocessed;
         std::queue<std::string> token_values;
+        
 };
 
 #endif //LEXER
