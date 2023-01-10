@@ -1,7 +1,7 @@
 #ifndef JSONTYPE
 #define JSONTYPE
 
-class json_t
+class Json
 {
     
 };
