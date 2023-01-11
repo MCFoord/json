@@ -49,7 +49,6 @@ class Lexer
         token_type string_token();
         token_type number_token();
         token_type literal_token(std::string literal, token_type token);
-        void token_buffer_add(char c);
 
         number_state number_state_initial();
         number_state number_state_minus();

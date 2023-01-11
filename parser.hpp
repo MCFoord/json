@@ -10,7 +10,8 @@ class Parser
             PARSE_OBJECT_END,
             PARSE_ARRAY_START,
             PARSE_ARRAY_END,
-            PARSE_VALUE
+            PARSE_VALUE,
+            PARSE_KEY
         };
 };
 
