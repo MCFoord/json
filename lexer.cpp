@@ -140,6 +140,9 @@ std::string Lexer::debug_token_value_string(token_type token)
         case token_type::TOKEN_EOF:
             return "EOF";
             break;
+        default:
+            return "ENUM ERROR";
+            break;
     }
 }
 
@@ -185,6 +188,9 @@ std::string Lexer::debug_token_name_string(token_type token)
             break;
         case token_type::TOKEN_EOF:
             return "TOKEN_EOF";
+            break;
+        default:
+            return "ENUM ERROR";
             break;
     }
 }
