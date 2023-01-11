@@ -10,8 +10,7 @@ class Json_object
 {
     public:
         Json_object();
-        template<typename T>
-        T& operator[](const std::string& key);
+        Value& operator[](const std::string& key);
     private:
         std::unordered_map<std::string, Value*> object;
 

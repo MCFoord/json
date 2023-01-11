@@ -8,6 +8,8 @@ T& Json_object::operator[](const std::string& key)
 
     if (iterable == object.end())
     {
-        iterable = object.insert()
+        iterable = object.insert(key, T{});
     }
+
+    return iterable->second;
 }
