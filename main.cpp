@@ -1,6 +1,7 @@
 #include <iostream>
 #include "lexer.hpp"
 #include "inputhandler.hpp"
+#include "value.hpp"
 
 int main(int argc, char *argv[]) 
 {

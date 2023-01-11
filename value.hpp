@@ -1,21 +1,19 @@
 #ifndef VALUE
 #define VALUE
 
-#include <any>
-#include "value_t.hpp"
 #include <string>
 #include <vector>
-#include <unordered_map>
+#include <variant>
+#include "json_object.hpp"
 
-union Value
+class Json_object;
+
+class Value
 {
-    unsigned int uint;
-    int sint;
-    double dbl;
-    std::string string;
-    bool boolean;
-    std::vector<Value> array;
-    std::unordered_map<std::string, Value> object;
+    public:
+        Value();
+    private:
+        std::variant<unsigned int, int, double, std::string, bool, std::vector<Value>, Json_object> value;
 };
 
 #endif //VALUE
