@@ -1,5 +1,6 @@
 CPPFLAGS = -Wall -std=c++17
 OBJS = inputhandler.o main.o lexer.o
+TESTOBJS = inputhandler.o test.o lexer.o
 
 .default: all
 
@@ -9,6 +10,9 @@ clean:
 	rm -rf *.o *.dSYM
 
 json.run: $(OBJS)
+	g++ $(CPPFLAGS) -g -O -o $@ $^
+
+test: $(TESTOBJS)
 	g++ $(CPPFLAGS) -g -O -o $@ $^
 
 %.o: %.cpp
