@@ -1,6 +1,6 @@
 CPPFLAGS = -Wall -std=c++17
 OBJS = inputhandler.o main.o lexer.o
-TESTOBJS = inputhandler.o test.o lexer.o
+TESTOBJS = inputhandler.o test.o lexer.o value.o json_object.o
 
 .default: all
 
