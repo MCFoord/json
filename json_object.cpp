@@ -1,15 +1,14 @@
 #include <string>
 #include "json_object.hpp"
 
-template<typename T>
-T& Json_object::operator[](const std::string& key)
+Value& Json_object::operator[](std::string key)
 {
     auto iterable = object.find(key);
 
     if (iterable == object.end())
     {
-        iterable = object.insert(key, T{});
+        iterable = object.insert(std::make_pair(key, nullptr)).first;
     }
 
-    return iterable->second;
+    return *iterable->second;
 }

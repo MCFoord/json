@@ -1,4 +1,5 @@
 #include "value.hpp"
+#include <memory>
 
 Value::Value(unsigned int val)
 {
@@ -25,13 +26,14 @@ Value::Value(bool val)
     value = val;
 };
 
+//fix me
 Value::Value(std::vector<Value> val)
 {
-    value = val;
+    value = 0;
 };
 
-Value::Value(Json_object val)
+Value::Value(Json_object* val)
 {
-    value = val;
+    this->value = val;
 };
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <variant>
 #include "lexer.hpp"
 #include "inputhandler.hpp"
 #include "value.hpp"
@@ -14,7 +15,7 @@ int main(int argc, char *argv[])
     Value val = 25;
     json[key] = 25;
 
-    std::cout << json[key] << "\n";
+    // std::cout << std::get<int>(val) << "\n";
 
     return EXIT_SUCCESS;
 }
