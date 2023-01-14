@@ -37,3 +37,4 @@ Value::Value(Json_object* val)
     this->value = val;
 };
 
+Value::Value() {};
