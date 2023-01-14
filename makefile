@@ -12,7 +12,7 @@ clean:
 json.run: $(OBJS)
 	g++ $(CPPFLAGS) -g -O -o $@ $^
 
-test: $(TESTOBJS)
+test.run: $(TESTOBJS)
 	g++ $(CPPFLAGS) -g -O -o $@ $^
 
 %.o: %.cpp
