@@ -12,10 +12,22 @@ int main(int argc, char *argv[])
     Json_object json = Json_object();
 
     std::string key = "hello";
-    Value val = 25;
+    Value val = 46;
     json[key] = 25;
+    val = json[key];
+    std::string s = "max";
+    json[key] = s;
+    val = json[key];
+    json[key] = -200;
+    val = json[key];
+    json[key] = 2.00;
+    val = json[key];
+    json[key] = true;
+    val = json[key];
+    Json_object json2 = Json_object();
+    json[key] = &json2;
+    val = json[key];
 
-    // std::cout << std::get<int>(val) << "\n";
 
     return EXIT_SUCCESS;
 }
