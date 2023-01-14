@@ -1,5 +1,15 @@
 #include "value.hpp"
 #include <memory>
+#include <string>
+
+
+Value::Value() {};
+
+Value::Value(const char* val)
+{
+    std::string string = val;
+    value = string;
+};
 
 Value::Value(unsigned int val)
 {
@@ -36,5 +46,3 @@ Value::Value(Json_object* val)
 {
     this->value = val;
 };
-
-Value::Value() {};

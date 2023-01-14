@@ -15,8 +15,7 @@ int main(int argc, char *argv[])
     Value val = 46;
     json[key] = 25;
     val = json[key];
-    std::string s = "max";
-    json[key] = s;
+    json[key] = "max";
     val = json[key];
     json[key] = -200;
     val = json[key];

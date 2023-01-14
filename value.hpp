@@ -15,6 +15,7 @@ class Value
 {
     public:
         Value();
+        Value(const char*);
         Value(unsigned int val);
         Value(int val);
         Value(double val);
