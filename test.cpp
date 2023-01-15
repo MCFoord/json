@@ -24,8 +24,12 @@ int main(int argc, char *argv[])
     json[key] = true;
     val = json[key];
     Json_object json2 = Json_object();
+    json2[key] = "john";
     json[key] = &json2;
     val = json[key];
+
+    // Json_object val2 = val;
+    // // json[key][key] = "jim";
 
 
     return EXIT_SUCCESS;
