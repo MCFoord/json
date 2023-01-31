@@ -8,27 +8,27 @@
 
 Lexer::Lexer(Input_handler* input)
 {
-    this->input = input;
-    line_character_pos = 0;
-    line_count = 0;
-    current_char_unprocessed = false;
+    this->m_input = input;
+    m_line_character_pos = 0;
+    m_line_count = 0;
+    m_current_char_unprocessed = false;
 }
 
 
 Lexer::token_type Lexer::next_token()
 {
-    if (!current_char_unprocessed)
+    if (!m_current_char_unprocessed)
     {
         next_char();
     }
     else
     {
-        current_char_unprocessed = false;
+        m_current_char_unprocessed = false;
     }
 
     skip_whitespace();
 
-    switch (current_char)
+    switch (m_current_char)
     {
     case '[':
         return token_type::TOKEN_BEGIN_ARRAY;
@@ -116,13 +116,13 @@ std::string Lexer::debug_token_value_string(token_type token)
             return ",";
             break;
         case token_type::TOKEN_NUMBER:
-            value = token_values.front();
-            token_values.pop();
+            value = m_token_values.front();
+            m_token_values.pop();
             return value;
             break;
         case token_type::TOKEN_STRING:
-            value = token_values.front();
-            token_values.pop();
+            value = m_token_values.front();
+            m_token_values.pop();
             return value;
             break;
         case token_type::TOKEN_TRUE:
@@ -197,7 +197,7 @@ std::string Lexer::debug_token_name_string(token_type token)
 
 void Lexer::skip_whitespace()
 {
-    while(current_char == ' ' || current_char == '\n' || current_char == '\t' || current_char == '\r')
+    while(m_current_char == ' ' || m_current_char == '\n' || m_current_char == '\t' || m_current_char == '\r')
     {
         next_char();
     }
@@ -206,15 +206,15 @@ void Lexer::skip_whitespace()
 //# todo: add unicode escapes 
 Lexer::token_type Lexer::string_token()
 {
-    token_buffer.clear();
+    m_token_buffer.clear();
 
-    while (current_char != std::char_traits<char>::eof())
+    while (m_current_char != std::char_traits<char>::eof())
     {
         switch (next_char())
         {
             //valid string
             case '\"':
-                token_values.push(token_buffer);
+                m_token_values.push(m_token_buffer);
                 return token_type::TOKEN_STRING;
                 break;
             
@@ -223,35 +223,35 @@ Lexer::token_type Lexer::string_token()
                 switch (next_char())
                 {
                     case '\"':
-                        token_buffer.push_back('\"');
+                        m_token_buffer.push_back('\"');
                         break;
 
                     case '\\':
-                        token_buffer.push_back('\\');
+                        m_token_buffer.push_back('\\');
                         break;
 
                     case '/':
-                        token_buffer.push_back('/');
+                        m_token_buffer.push_back('/');
                         break;
 
                     case 'b':
-                        token_buffer.push_back('\b');
+                        m_token_buffer.push_back('\b');
                         break;
 
                     case 'f':
-                        token_buffer.push_back('\f');
+                        m_token_buffer.push_back('\f');
                         break;
 
                     case 'n':
-                        token_buffer.push_back('\n');
+                        m_token_buffer.push_back('\n');
                         break;
 
                     case 'r':
-                        token_buffer.push_back('\r');
+                        m_token_buffer.push_back('\r');
                         break;
 
                     case 't':
-                        token_buffer.push_back('\t');
+                        m_token_buffer.push_back('\t');
                         break;
 
                     default:
@@ -355,7 +355,7 @@ Lexer::token_type Lexer::string_token()
             case 0x7D:
             case 0x7E:
             case 0x7F:
-                token_buffer.push_back(current_char);
+                m_token_buffer.push_back(m_current_char);
                 break;
 
             default:
@@ -371,7 +371,7 @@ Lexer::token_type Lexer::string_token()
 Lexer::token_type Lexer::number_token()
 {
     number_state state = number_state::STATE_INITIAL;
-    token_buffer.clear();
+    m_token_buffer.clear();
     while (true)
     {
         switch (state)
@@ -412,8 +412,8 @@ Lexer::token_type Lexer::number_token()
                 break;
 
             case number_state::STATE_FINAL:
-                token_values.push(token_buffer);
-                current_char_unprocessed = true;
+                m_token_values.push(m_token_buffer);
+                m_current_char_unprocessed = true;
                 return token_type::TOKEN_NUMBER;
                 break;
                 
@@ -426,15 +426,15 @@ Lexer::token_type Lexer::number_token()
 
 Lexer::number_state Lexer::number_state_initial()
 {
-    switch (current_char)
+    switch (m_current_char)
     {
         case '-':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_minus();
             break;
 
         case '0':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_zero();
             break;
 
@@ -447,7 +447,7 @@ Lexer::number_state Lexer::number_state_initial()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_digit_number();
             break;
 
@@ -462,7 +462,7 @@ Lexer::number_state Lexer::number_state_minus()
     switch (next_char())
     {
         case '0':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_zero();
             break;
 
@@ -475,7 +475,7 @@ Lexer::number_state Lexer::number_state_minus()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_digit_number();
             break;
 
@@ -490,13 +490,13 @@ Lexer::number_state Lexer::number_state_zero()
     switch (next_char())
     {
         case '.':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_mantissa();
             break;
 
         case 'e':
         case 'E':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_e();
             break;
         
@@ -510,7 +510,7 @@ Lexer::number_state Lexer::number_state_zero()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state::STATE_ERROR;
             break;
 
@@ -525,13 +525,13 @@ Lexer::number_state Lexer::number_state_digit_number()
     switch (next_char())
     {
         case '.':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_mantissa();
             break;
         
         case 'e':
         case 'E':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_e();
             break;
 
@@ -545,7 +545,7 @@ Lexer::number_state Lexer::number_state_digit_number()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_digit_number();
             break;
         
@@ -561,7 +561,7 @@ Lexer::number_state Lexer::number_state_digit_fraction()
     {
         case 'e':
         case 'E':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_e();
             break;
 
@@ -575,7 +575,7 @@ Lexer::number_state Lexer::number_state_digit_fraction()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_digit_fraction();
             break;
         
@@ -599,7 +599,7 @@ Lexer::number_state Lexer::number_state_digit_exponent()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_digit_exponent();
             break;
         
@@ -623,7 +623,7 @@ Lexer::number_state Lexer::number_state_mantissa()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_digit_fraction();
             break;
 
@@ -639,7 +639,7 @@ Lexer::number_state Lexer::number_state_e()
     {
         case '+':
         case '-':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_plus_minus();
             break;
 
@@ -663,7 +663,7 @@ Lexer::number_state Lexer::number_state_plus_minus()
         case '7':
         case '8':
         case '9':
-            token_buffer.push_back(current_char);
+            m_token_buffer.push_back(m_current_char);
             return number_state_digit_exponent();
             break;
         
@@ -713,14 +713,14 @@ void Lexer::full_token_scan()
 
 char Lexer::next_char()
 {
-    current_char = input->get_next_char();
-    ++line_character_pos;
+    m_current_char = m_input->get_next_char();
+    ++m_line_character_pos;
 
-    if (current_char == '\n')
+    if (m_current_char == '\n')
     {
-        ++line_count;
-        line_character_pos = 0; 
+        ++m_line_count;
+        m_line_character_pos = 0; 
     }
 
-    return current_char;
+    return m_current_char;
 }

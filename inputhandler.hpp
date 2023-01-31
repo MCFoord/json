@@ -21,7 +21,7 @@ class File_input_handler: public Input_handler
         File_input_handler(std::string file_name);
         char get_next_char() override;
     private:
-        std::ifstream src;
+        std::ifstream m_src;
 };
 
 class String_input_handler: public Input_handler
@@ -30,7 +30,7 @@ class String_input_handler: public Input_handler
         String_input_handler(std::string str);
         char get_next_char() override;
     private:
-        std::istringstream src;
+        std::istringstream m_src;
 };
 
 #endif //INPUTHANDLER

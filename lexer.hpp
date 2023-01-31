@@ -66,13 +66,13 @@ class Lexer
         std::string debug_token_value_string(token_type token);
 
     private:
-        Input_handler* input;
-        int32_t line_character_pos;
-        int32_t line_count;
-        char current_char;
-        std::string token_buffer;
-        bool current_char_unprocessed;
-        std::queue<std::string> token_values;
+        Input_handler* m_input;
+        int32_t m_line_character_pos;
+        int32_t m_line_count;
+        char m_current_char;
+        std::string m_token_buffer;
+        bool m_current_char_unprocessed;
+        std::queue<std::string> m_token_values;
         
 };
 
