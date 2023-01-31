@@ -27,9 +27,8 @@ class json_t
         // {
         //     std::visit([&stream] (const auto& x) {stream << x;}, val);
         // };
-        std::variant<unsigned int, int, double, std::string, bool, std::vector<json_t>, std::unordered_map<std::string, json_t*>> value;
     private:
-        
+        std::variant<unsigned int, int, double, std::string, bool, std::vector<json_t>, std::unordered_map<std::string, json_t*>> value;
         value_t type;
 
 };
