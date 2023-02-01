@@ -111,6 +111,10 @@ json_t* Parser::parse_array()
     while (token != token_type::TOKEN_END_ARRAY)
     {
         array.push_back(parse_value());
+        if (m_lexer.next_token() != token_type::TOKEN_VALUE_SEPARATOR)
+        {
+            // throw error
+        }
         token = m_lexer.next_token();
     }
 
@@ -120,4 +124,14 @@ json_t* Parser::parse_array()
 json_t* Parser::parse_number(std::string number_string)
 {
     //figure out what type of number it is and convert it to that type
+
+    for (char& c : number_string)
+    {
+        if (c == '.' || c == 'e' || c == 'E')
+        {
+            return new json_t(std::stod(number_string));
+        }
+    }
+    
+    return new json_t(std::stoi(number_string));
 }
