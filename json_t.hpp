@@ -20,7 +20,7 @@ class json_t
         json_t(double val);
         json_t(std::string val);
         json_t(bool val);
-        json_t(std::vector<json_t> val);
+        json_t(std::vector<json_t*> val);
         json_t(std::unordered_map<std::string, json_t*> val);
         json_t& operator[](std::string key);
         // friend std::ostream& operator<<(std::ostream& stream, const Value& val)
@@ -28,7 +28,7 @@ class json_t
         //     std::visit([&stream] (const auto& x) {stream << x;}, val);
         // };
     private:
-        std::variant<unsigned int, int, double, std::string, bool, std::vector<json_t>, std::unordered_map<std::string, json_t*>> value;
+        std::variant<unsigned int, int, double, std::string, bool, std::vector<json_t*>, std::unordered_map<std::string, json_t*>> value;
         value_t type;
 
 };

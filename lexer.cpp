@@ -724,3 +724,8 @@ char Lexer::next_char()
 
     return m_current_char;
 }
+
+std::string Lexer::token_value()
+{
+    return m_token_buffer;
+}

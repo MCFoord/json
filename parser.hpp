@@ -21,11 +21,15 @@ class Parser
 
         Parser(Lexer lexer);
         json_t* parse();
-        parse_object();
-        parse_array();
+        json_t* parse_object();
+        json_t* parse_array();
+        void parse_key_value_pair(json_t* json, token_type token_type);
+        json_t* parse_value();
+        json_t* parse_number(std::string number_string);
 
     private:
         Lexer m_lexer;
+        parse_state m_parse_state;
 };
 
 #endif //PARSER

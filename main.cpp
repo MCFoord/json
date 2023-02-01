@@ -1,12 +1,12 @@
 #include <iostream>
 #include "lexer.hpp"
 #include "inputhandler.hpp"
-#include "value.hpp"
 
 int main(int argc, char *argv[]) 
 {
     if (argc != 2)
     {
+        std::cout << "incorrect number of arguments: ./json.run <file to parse>\n";
         return EXIT_FAILURE;
     }
     std::cout << argv[1] << '\n';

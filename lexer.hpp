@@ -44,6 +44,8 @@ class Lexer
 
         Lexer(Input_handler* input);
         token_type next_token();
+        std::string token_value();
+
         void skip_whitespace();
         char next_char();
         token_type string_token();

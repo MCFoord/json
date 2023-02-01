@@ -23,7 +23,7 @@ json_t::json_t(std::string val): value(val), type(value_t::TYPE_STRING){};
 
 json_t::json_t(bool val): value(val), type(value_t::TYPE_BOOL){};
 
-json_t::json_t(std::vector<json_t> val): value(val), type(value_t::TYPE_ARRAY){};
+json_t::json_t(std::vector<json_t*> val): value(val), type(value_t::TYPE_ARRAY){};
 
 json_t::json_t(std::unordered_map<std::string, json_t*> val): value(val), type(value_t::TYPE_OBJECT){};
 
