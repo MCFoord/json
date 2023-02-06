@@ -1,9 +1,11 @@
 #include <iostream>
 #include <string>
 #include <variant>
+#include <fstream>
 #include "lexer.hpp"
 #include "inputhandler.hpp"
 #include "json_t.hpp"
+#include "parser.hpp"
 
 int main(int argc, char *argv[]) 
 {
@@ -20,6 +22,11 @@ int main(int argc, char *argv[])
     json_t& test2 = testjson;
     test2 = 900;
 
+    std::ifstream testfile;
+    testfile.open("./inputs/numbers.json");
+
+    std::cout << testfile.get() << "\n";
+
     val = 95;
     json[key] = 25;
     val = json[key];
@@ -34,6 +41,11 @@ int main(int argc, char *argv[])
     json[key] = json_t();
     json[key][key] = "jim";
 
+    File_input_handler* input = new File_input_handler("./inputs/numbers.json");
+    Parser parser = Parser(Lexer(input));
+
+    json_t* output = parser.parse();
+    
 
     return EXIT_SUCCESS;
 }

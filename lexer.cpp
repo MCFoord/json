@@ -14,6 +14,7 @@ Lexer::Lexer(Input_handler* input)
     m_current_char_unprocessed = false;
 }
 
+Lexer::Lexer() {};
 
 Lexer::token_type Lexer::next_token()
 {

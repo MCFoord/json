@@ -5,6 +5,8 @@
 #include "json_t.hpp"
 #include "lexer.hpp"
 
+typedef Lexer::token_type token_type;
+
 class Parser
 {
     public:
@@ -19,6 +21,7 @@ class Parser
             PARSE_ERROR
         };
 
+        Parser();
         Parser(Lexer lexer);
         json_t* parse();
         json_t* parse_object();

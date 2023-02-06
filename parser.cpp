@@ -1,26 +1,31 @@
 #include <vector>
+#include <iostream>
 #include "parser.hpp"
 #include "lexer.hpp"
 
 typedef Lexer::token_type token_type;
 
+Parser::Parser(Lexer lexer)
+{
+    this->m_lexer = lexer;
+}
+
+Parser::Parser() {};
+
 json_t* Parser::parse()
 {
-
-    token_type token = m_lexer.next_token();
-
     switch (m_lexer.next_token())
     {
         case token_type::TOKEN_BEGIN_ARRAY:
-            return parse_object();
-            break;
-
-        case token_type::TOKEN_BEGIN_OBJECT:
             return parse_array();
             break;
 
+        case token_type::TOKEN_BEGIN_OBJECT:
+            return parse_object();
+            break;
+
         default:
-            //error
+            std::cout << "there was an error\n";
             break;
     }
 }
@@ -49,6 +54,7 @@ void Parser::parse_key_value_pair(json_t* jsonPtr, token_type token)
     if(token != token_type::TOKEN_STRING)
     {
         //throw error
+        std::cout << "there was an error\n";
     }
 
     std::string key = m_lexer.token_value();
@@ -56,6 +62,7 @@ void Parser::parse_key_value_pair(json_t* jsonPtr, token_type token)
     if (m_lexer.next_token() != token_type::TOKEN_NAME_SEPARATOR)
     {
         // throw error
+        std::cout << "there was an error\n";
     }
 
     json[key] = parse_value();
@@ -98,6 +105,7 @@ json_t* Parser::parse_value()
         default:
             // probably need to separate these errors to be specific
             // parse error
+            std::cout << "there was an error\n";
             break;
     }
 }
@@ -114,6 +122,7 @@ json_t* Parser::parse_array()
         if (m_lexer.next_token() != token_type::TOKEN_VALUE_SEPARATOR)
         {
             // throw error
+            std::cout << "there was an error\n";
         }
         token = m_lexer.next_token();
     }

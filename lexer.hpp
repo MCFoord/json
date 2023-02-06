@@ -41,7 +41,8 @@ class Lexer
             STATE_FINAL,
             STATE_ERROR
         };
-
+        
+        Lexer();
         Lexer(Input_handler* input);
         token_type next_token();
         std::string token_value();
