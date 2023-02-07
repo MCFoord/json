@@ -29,10 +29,12 @@ class Parser
         void parse_key_value_pair(json_t& json, token_type token_type);
         json_t* parse_value();
         json_t* parse_number(std::string number_string);
+        token_type next_token();
 
     private:
         Lexer m_lexer;
         parse_state m_parse_state;
+        token_type m_current_token;
 };
 
 #endif //PARSER
