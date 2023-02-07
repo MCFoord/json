@@ -10,6 +10,12 @@
 int main(int argc, char *argv[]) 
 {
 
+    if (argc != 2)
+    {
+        std::cout << "incorrect number of arguments: ./test.run <file to parse>\n";
+        return EXIT_FAILURE;
+    }
+
     json_t json = json_t(std::unordered_map<std::string, json_t*>({{"lol", new json_t(400)}, {"goodbye", new json_t("gimp")}}));
     json_t testjson = json_t();
 
@@ -41,7 +47,7 @@ int main(int argc, char *argv[])
     json[key] = json_t();
     json[key][key] = "jim";
 
-    File_input_handler* input = new File_input_handler("./inputs/numbers.json");
+    File_input_handler* input = new File_input_handler(argv[1]);
     Parser parser = Parser(Lexer(input));
 
     json_t* output = parser.parse();

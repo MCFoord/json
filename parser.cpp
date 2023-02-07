@@ -38,18 +38,21 @@ json_t* Parser::parse_object()
 
     while (token != token_type::TOKEN_END_OBJECT)
     {
-        parse_key_value_pair(json, token);
+        parse_key_value_pair(*json, token);
         // if eof throw eof before object close error
         token = m_lexer.next_token();
+
+        if (token == token_type::TOKEN_VALUE_SEPARATOR)
+        {
+            token = m_lexer.next_token();
+        }
     }
-    
 
     return json;
 }
 
-void Parser::parse_key_value_pair(json_t* jsonPtr, token_type token)
+void Parser::parse_key_value_pair(json_t& json, token_type token)
 {
-    json_t json = *jsonPtr;
     //parse key
     if(token != token_type::TOKEN_STRING)
     {
@@ -65,7 +68,9 @@ void Parser::parse_key_value_pair(json_t* jsonPtr, token_type token)
         std::cout << "there was an error\n";
     }
 
-    json[key] = parse_value();
+    json_t* val = parse_value();
+
+    json[key] = *val;
 }
 
 json_t* Parser::parse_value()
@@ -142,5 +147,6 @@ json_t* Parser::parse_number(std::string number_string)
         }
     }
     
-    return new json_t(std::stoi(number_string));
+    int num = std::stoi(number_string);
+    return new json_t(num);
 }

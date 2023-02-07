@@ -26,7 +26,7 @@ class Parser
         json_t* parse();
         json_t* parse_object();
         json_t* parse_array();
-        void parse_key_value_pair(json_t* json, token_type token_type);
+        void parse_key_value_pair(json_t& json, token_type token_type);
         json_t* parse_value();
         json_t* parse_number(std::string number_string);
 
