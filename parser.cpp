@@ -36,11 +36,20 @@ json_t* Parser::parse_object()
     json_t* json = new json_t();
 
     next_token();
+    token_type peeked_token;
+
     while (m_current_token != token_type::TOKEN_END_OBJECT)
     {
         parse_key_value_pair(*json, m_current_token);
         // if eof throw eof before object close error
-        
+        peeked_token = m_lexer.peek_next_token();
+
+        if (peeked_token != token_type::TOKEN_END_OBJECT && peeked_token != token_type::TOKEN_VALUE_SEPARATOR)
+        {
+            //throw error
+            std::cout << "there was an error\n";
+        }
+
         if (next_token() == token_type::TOKEN_VALUE_SEPARATOR)
         {
             next_token();
@@ -119,12 +128,21 @@ json_t* Parser::parse_value()
 json_t* Parser::parse_array()
 {
     std::vector<json_t*> array;
+    token_type peeked_token;
 
     while (m_current_token != token_type::TOKEN_END_ARRAY)
     {
         array.push_back(parse_value());
 
         //need to have a way to check for value separator, need to implement a peek at next token function in lexer
+        peeked_token = m_lexer.peek_next_token();
+
+        if (peeked_token != token_type::TOKEN_END_ARRAY && peeked_token != token_type::TOKEN_VALUE_SEPARATOR)
+        {
+            //throw error
+            std::cout << "there was an error\n";
+        }
+
         next_token();
     }
 

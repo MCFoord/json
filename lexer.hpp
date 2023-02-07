@@ -45,6 +45,7 @@ class Lexer
         Lexer();
         Lexer(Input_handler* input);
         token_type next_token();
+        token_type peek_next_token();
         std::string token_value();
 
         void skip_whitespace();
@@ -65,7 +66,6 @@ class Lexer
         
         //for testing, and running a full file without parsing
         void full_token_scan();
-        token_type next_token_debug();
         std::string debug_token_name_string(token_type token);
         std::string debug_token_value_string(token_type token);
 
@@ -77,6 +77,8 @@ class Lexer
         std::string m_token_buffer;
         bool m_current_char_unprocessed;
         std::queue<std::string> m_token_values;
+        bool m_token_peeked;
+        token_type m_next_token;
         
 };
 

@@ -12,12 +12,19 @@ Lexer::Lexer(Input_handler* input)
     m_line_character_pos = 0;
     m_line_count = 0;
     m_current_char_unprocessed = false;
+    m_token_peeked = false;
 }
 
 Lexer::Lexer() {};
 
 Lexer::token_type Lexer::next_token()
 {
+    if (m_token_peeked)
+    {
+        m_token_peeked = false;
+        return m_next_token;
+    }
+
     if (!m_current_char_unprocessed)
     {
         next_char();
@@ -91,6 +98,13 @@ Lexer::token_type Lexer::next_token()
     default:
         return token_type::TOKEN_ERROR;
     }
+}
+
+Lexer::token_type Lexer::peek_next_token()
+{
+    m_next_token = next_token();
+    m_token_peeked = true;
+    return m_next_token;
 }
 
 std::string Lexer::debug_token_value_string(token_type token)
