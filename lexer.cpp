@@ -678,12 +678,14 @@ Lexer::token_type Lexer::literal_token(std::string literal, token_type token)
 {
     for (auto& c : literal)
     {
-        if (c != next_char())
+        if (c != m_current_char)
         {
             return token_type::TOKEN_ERROR;
         }
+        next_char();
     }
-
+    
+    m_current_char_unprocessed = true;
     return token;
 }
 

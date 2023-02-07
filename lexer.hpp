@@ -65,6 +65,7 @@ class Lexer
         
         //for testing, and running a full file without parsing
         void full_token_scan();
+        token_type next_token_debug();
         std::string debug_token_name_string(token_type token);
         std::string debug_token_value_string(token_type token);
 
