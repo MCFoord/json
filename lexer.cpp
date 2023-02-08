@@ -107,7 +107,7 @@ Lexer::token_type Lexer::peek_next_token()
     return m_next_token;
 }
 
-std::string Lexer::debug_token_value_string(token_type token)
+std::string Lexer::token_value_string(token_type token)
 {
     std::string value;
     switch (token)
@@ -161,7 +161,7 @@ std::string Lexer::debug_token_value_string(token_type token)
     }
 }
 
-std::string Lexer::debug_token_name_string(token_type token)
+std::string Lexer::token_name_string(token_type token)
 {
     switch (token)
     {
@@ -720,10 +720,10 @@ void Lexer::full_token_scan()
     {
         std::cout << std::setw(25)
                   << std::left
-                  << debug_token_name_string(t)
+                  << token_name_string(t)
                   << std::setw(20)
                   << std::left
-                  << debug_token_value_string(t)
+                  << token_value_string(t)
                   << '\n';
     }
 }
@@ -745,4 +745,14 @@ char Lexer::next_char()
 std::string Lexer::token_value()
 {
     return m_token_buffer;
+}
+
+int Lexer::get_char_pos()
+{
+    return m_line_character_pos;
+}
+
+int Lexer::get_line_pos()
+{
+    return m_line_count;
 }

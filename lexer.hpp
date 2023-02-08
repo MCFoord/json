@@ -64,15 +64,17 @@ class Lexer
         number_state number_state_plus_minus();
         number_state number_state_e();
         
-        //for testing, and running a full file without parsing
+        //for testing, debug, and exceptions
         void full_token_scan();
-        std::string debug_token_name_string(token_type token);
-        std::string debug_token_value_string(token_type token);
+        std::string token_name_string(token_type token);
+        std::string token_value_string(token_type token);
+        int get_line_pos();
+        int get_char_pos();
 
     private:
         Input_handler* m_input;
-        int32_t m_line_character_pos;
-        int32_t m_line_count;
+        int m_line_character_pos;
+        int m_line_count;
         char m_current_char;
         std::string m_token_buffer;
         bool m_current_char_unprocessed;

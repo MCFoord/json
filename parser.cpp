@@ -2,6 +2,7 @@
 #include <iostream>
 #include "parser.hpp"
 #include "lexer.hpp"
+#include "exceptions.hpp"
 
 typedef Lexer::token_type token_type;
 
@@ -26,7 +27,7 @@ json_t* Parser::parse()
             break;
 
         default:
-            std::cout << "there was an error\n";
+            throw unexepected_token_exception(m_lexer.token_value_string(m_current_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());
             break;
     }
 }
@@ -46,8 +47,7 @@ json_t* Parser::parse_object()
 
         if (peeked_token != token_type::TOKEN_END_OBJECT && peeked_token != token_type::TOKEN_VALUE_SEPARATOR)
         {
-            //throw error
-            std::cout << "there was an error\n";
+            throw unexepected_token_exception(m_lexer.token_value_string(m_current_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());
         }
 
         if (next_token() == token_type::TOKEN_VALUE_SEPARATOR)
@@ -64,16 +64,14 @@ void Parser::parse_key_value_pair(json_t& json, token_type token)
     //parse key
     if(token != token_type::TOKEN_STRING)
     {
-        //throw error
-        std::cout << "there was an error\n";
+        throw unexepected_token_exception(m_lexer.token_value_string(m_current_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());
     }
 
     std::string key = m_lexer.token_value();
 
     if (next_token() != token_type::TOKEN_NAME_SEPARATOR)
     {
-        // throw error
-        std::cout << "there was an error\n";
+        throw unexepected_token_exception(m_lexer.token_value_string(m_current_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());
     }
 
     json_t* val = parse_value();
@@ -120,7 +118,7 @@ json_t* Parser::parse_value()
         default:
             // probably need to separate these errors to be specific
             // parse error
-            std::cout << "there was an error\n";
+            throw unexepected_token_exception(m_lexer.token_value_string(m_current_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());
             break;
     }
 }
@@ -134,13 +132,12 @@ json_t* Parser::parse_array()
     {
         array.push_back(parse_value());
 
-        //need to have a way to check for value separator, need to implement a peek at next token function in lexer
+    
         peeked_token = m_lexer.peek_next_token();
 
         if (peeked_token != token_type::TOKEN_END_ARRAY && peeked_token != token_type::TOKEN_VALUE_SEPARATOR)
         {
-            //throw error
-            std::cout << "there was an error\n";
+            throw unexepected_token_exception(m_lexer.token_value_string(m_current_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());     
         }
 
         next_token();
