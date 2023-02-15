@@ -97,13 +97,15 @@ std::string json_t::to_string(int indent, int level)
 
                 if (e != array_last_element)
                 {
-                    ss << "," << newline;
+                    ss << ",";
                 }
+
+                ss << newline;
             }
             
             --level;
 
-            ss << "]" << newline;
+            ss << add_indentation(level, indentation) << "]" << newline;
             break;
 
         case value_t::TYPE_NULL:
