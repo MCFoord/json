@@ -6,7 +6,7 @@
 #include <variant>
 #include <ostream>
 #include <memory>
-#include <unordered_map>
+#include <map>
 #include "json_t.hpp"
 #include "value_t.hpp"
 
@@ -21,15 +21,16 @@ class json_t
         json_t(std::string val);
         json_t(bool val);
         json_t(std::vector<json_t*> val);
-        json_t(std::unordered_map<std::string, json_t*> val);
+        json_t(std::map<std::string, json_t*> val);
         json_t& operator[](std::string key);
+        std::string to_string();
         // friend std::ostream& operator<<(std::ostream& stream, const Value& val)
         // {
         //     std::visit([&stream] (const auto& x) {stream << x;}, val);
         // };
     private:
-        std::variant<unsigned int, int, double, std::string, bool, std::vector<json_t*>, std::unordered_map<std::string, json_t*>> value;
-        value_t type;
+        std::variant<unsigned int, int, double, std::string, bool, std::vector<json_t*>, std::map<std::string, json_t*>> m_value;
+        value_t m_type;
 
 };
 

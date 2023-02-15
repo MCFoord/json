@@ -38,12 +38,6 @@ class json_key_access_in_non_object_exception : public std::exception
 };
 
 
-//value expected
-//end of number expected
-//end of string expected
-//comma, end of object, or end of array expected
-//object, array or literal expected
-//key expected
 class unexpected_character_exception : public std::exception
 {
     public:

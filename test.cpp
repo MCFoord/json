@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
     
+    std::cout << output->to_string() << "\n";
     
     return EXIT_SUCCESS;
 }
