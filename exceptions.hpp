@@ -31,7 +31,7 @@ class unexepected_token_exception : public std::exception
 class json_key_access_in_non_object_exception : public std::exception
 {
     public:
-        const char* what() const noexcept
+        const char* what() const noexcept override
         {
             return "ACCESS_ERROR: trying to access key in non object type";
         };
@@ -50,7 +50,7 @@ class unexpected_character_exception : public std::exception
             m_what = ss.str();
         };
 
-        const char* what() const noexcept
+        const char* what() const noexcept override
         {
             return m_what.c_str();
         };
