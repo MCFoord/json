@@ -5,12 +5,13 @@
 #include <iomanip>
 #include "lexer.hpp"
 #include "inputhandler.hpp"
+#include "exceptions.hpp"
 
 Lexer::Lexer(Input_handler* input)
 {
     this->m_input = input;
-    m_line_character_pos = 0;
-    m_line_count = 0;
+    m_line_character_pos = 1;
+    m_line_count = 1;
     m_current_char_unprocessed = false;
     m_token_peeked = false;
 }
@@ -96,7 +97,7 @@ Lexer::token_type Lexer::next_token()
         break;
 
     default:
-        return token_type::TOKEN_ERROR;
+        throw unexpected_character_exception("object, array or literal", m_current_char);
     }
 }
 
@@ -131,14 +132,10 @@ std::string Lexer::token_value_string(token_type token)
             return ",";
             break;
         case token_type::TOKEN_NUMBER:
-            value = m_token_values.front();
-            m_token_values.pop();
-            return value;
+            return m_token_buffer;
             break;
         case token_type::TOKEN_STRING:
-            value = m_token_values.front();
-            m_token_values.pop();
-            return value;
+            return m_token_buffer;
             break;
         case token_type::TOKEN_TRUE:
             return "true";
@@ -271,7 +268,7 @@ Lexer::token_type Lexer::string_token()
 
                     default:
                         // incorrect escaped character
-                        return token_type::TOKEN_ERROR;
+                        throw unexpected_character_exception("valid excaped character", m_current_char);
                         break;
                 }
             
@@ -374,13 +371,13 @@ Lexer::token_type Lexer::string_token()
                 break;
 
             default:
-                return token_type::TOKEN_ERROR;
+                throw unexpected_character_exception("end of string", m_current_char);
                 break;
         }
     }
     
     //eof reached before valid string found
-    return token_type::TOKEN_ERROR;
+    throw unexpected_character_exception("end of string", m_current_char);
 }
 
 Lexer::token_type Lexer::number_token()
@@ -467,7 +464,7 @@ Lexer::number_state Lexer::number_state_initial()
             break;
 
         default:
-            return number_state::STATE_ERROR;
+            throw unexpected_character_exception("number", m_current_char);
             break;
     }
 }
@@ -495,7 +492,7 @@ Lexer::number_state Lexer::number_state_minus()
             break;
 
         default:
-            return number_state::STATE_ERROR;
+            throw unexpected_character_exception("end of number", m_current_char);
             break;
     }
 }
@@ -526,7 +523,7 @@ Lexer::number_state Lexer::number_state_zero()
         case '8':
         case '9':
             m_token_buffer.push_back(m_current_char);
-            return number_state::STATE_ERROR;
+            throw unexpected_character_exception("mantissa, comma, end of object, or end of array", m_current_char);
             break;
 
         default:
@@ -643,7 +640,7 @@ Lexer::number_state Lexer::number_state_mantissa()
             break;
 
         default:
-            return number_state::STATE_ERROR;
+            throw unexpected_character_exception("end of number", m_current_char);
             break;
     }
 }
@@ -659,7 +656,7 @@ Lexer::number_state Lexer::number_state_e()
             break;
 
         default:
-            return number_state::STATE_ERROR;
+            throw unexpected_character_exception("end of number", m_current_char);
             break;
     }
 }
@@ -683,7 +680,7 @@ Lexer::number_state Lexer::number_state_plus_minus()
             break;
         
         default:
-            return number_state::STATE_ERROR;
+            throw unexpected_character_exception("end of number", m_current_char);
             break;
     }
 }
@@ -694,7 +691,7 @@ Lexer::token_type Lexer::literal_token(std::string literal, token_type token)
     {
         if (c != m_current_char)
         {
-            return token_type::TOKEN_ERROR;
+            unexpected_character_exception("true, false or null", m_current_char);
         }
         next_char();
     }
@@ -703,6 +700,8 @@ Lexer::token_type Lexer::literal_token(std::string literal, token_type token)
     return token;
 }
 
+
+// remove this at some point as it will no longer work
 void Lexer::full_token_scan()
 {
     std::vector<token_type> tokens;
@@ -736,7 +735,7 @@ char Lexer::next_char()
     if (m_current_char == '\n')
     {
         ++m_line_count;
-        m_line_character_pos = 0; 
+        m_line_character_pos = 0;
     }
 
     return m_current_char;

@@ -57,11 +57,16 @@ int main(int argc, char *argv[])
     {
         output = parser.parse();
     }
-    catch (unexepected_token_exception e)
+    catch (unexepected_token_exception& e)
     {
         std::cout << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
-
+    catch(unexpected_character_exception& e)
+    {
+        std::cout << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
     
     
     return EXIT_SUCCESS;

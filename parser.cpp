@@ -47,7 +47,7 @@ json_t* Parser::parse_object()
 
         if (peeked_token != token_type::TOKEN_END_OBJECT && peeked_token != token_type::TOKEN_VALUE_SEPARATOR)
         {
-            throw unexepected_token_exception(m_lexer.token_value_string(m_current_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());
+            throw unexepected_token_exception(m_lexer.token_value_string(peeked_token), m_lexer.get_char_pos(), m_lexer.get_line_pos());
         }
 
         if (next_token() == token_type::TOKEN_VALUE_SEPARATOR)

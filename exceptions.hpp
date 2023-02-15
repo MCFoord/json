@@ -13,30 +13,57 @@ class unexepected_token_exception : public std::exception
     public:
         unexepected_token_exception(std::string token_value, int char_pos, int line_pos)
         {
-            m_token_value = token_value;
-            m_char_pos = char_pos;
-            m_line_pos = line_pos;
+            std::stringstream ss;
+            ss << "PARSE_ERROR: unexpected json token \"" << token_value << "\" at line " << line_pos  << " char " << char_pos;
+
+            m_what = ss.str();
         };
 
-        const char* what()
+        const char* what() const noexcept override
+        {
+            return m_what.c_str();
+        }; 
+
+    private:
+        std::string m_what;
+};
+
+class json_key_access_in_non_object_exception : public std::exception
+{
+    public:
+        const char* what() const noexcept
+        {
+            return "ACCESS_ERROR: trying to access key in non object type";
+        };
+};
+
+
+//value expected
+//end of number expected
+//end of string expected
+//comma, end of object, or end of array expected
+//object, array or literal expected
+//key expected
+class unexpected_character_exception : public std::exception
+{
+    public:
+        unexpected_character_exception(std::string expected, char actual)
         {
             std::stringstream ss;
 
-            ss << "unexpected token: \""
-               << m_token_value
-               << "\" at line "
-               << m_line_pos 
-               << "char "
-               << m_char_pos
-               <<".\n";
-            
-            return ss.str().c_str();
+            ss << "LEX_ERROR: " << expected << " expected, '" << actual << "' received instead";
+
+            m_what = ss.str();
+        };
+
+        const char* what() const noexcept
+        {
+            return m_what.c_str();
         };
 
     private:
-        std::string m_token_value;
-        int m_char_pos;
-        int m_line_pos;
+        std::string m_what;
 };
+
 
 #endif //EXCEPTIONS
