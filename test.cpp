@@ -17,6 +17,14 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
+    std::stringstream ss;
+
+    ss << "hello ";
+    ss << "";
+    ss << "world\n";
+
+    std::cout << ss.str();
+
     // json_t json = json_t(std::unordered_map<std::string, json_t*>({{"lol", new json_t(400)}, {"goodbye", new json_t("gimp")}}));
     // json_t testjson = json_t();
 
@@ -68,7 +76,7 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
     
-    std::cout << output->to_string() << "\n";
+    std::cout << output->to_string(4) << "\n";
     
     return EXIT_SUCCESS;
 }

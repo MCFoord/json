@@ -30,7 +30,7 @@ json_t::json_t(std::map<std::string, json_t*> val): m_value(val), m_type(value_t
 
 json_t& json_t::operator[](std::string key)
 {
-    if(this->m_type != value_t::TYPE_OBJECT)
+    if (this->m_type != value_t::TYPE_OBJECT)
     {  
         throw json_key_access_in_non_object_exception();
     }
@@ -38,50 +38,72 @@ json_t& json_t::operator[](std::string key)
     return *std::get<std::map<std::string, json_t*>>(this->m_value).emplace(key, new json_t()).first->second;
 }
 
-std::string json_t::to_string()
+//change level to internal function
+std::string json_t::to_string(int indent, int level)
 {
     std::stringstream ss;
     bool b;
     std::string s;
     std::string object_last_key;
     json_t* array_last_element;
+    std::string indentation = "";
+    std::string newline = "";
 
-    switch(m_type)
+    if (indent > 0)
+    {
+        newline = "\n";
+        for (int i = 0; i < indent; ++i)
+        {
+            indentation.append(" ");
+        }
+    }
+    
+    switch (m_type)
     {
         case value_t::TYPE_OBJECT:
             object_last_key = std::get<std::map<std::string, json_t*>>(m_value).rbegin()->first;
 
-            ss << "{";
+            ss << add_indentation(level, indentation) << "{" << newline;
 
-            for(const auto& [key, value] : std::get<std::map<std::string, json_t*>>(m_value))
+            ++level;
+
+            for (const auto& [key, value] : std::get<std::map<std::string, json_t*>>(m_value))
             {
-                ss << "\"" << key << "\": " << value->to_string();
+                ss << add_indentation(level, indentation) << "\"" << key << "\": " << value->to_string(indent, level);
 
                 if(key != object_last_key)
                 {
                     ss << ",";
                 }
-            }
 
-            ss << "}";
+                ss << newline;
+            }
+            
+            --level;
+
+            ss << add_indentation(level, indentation) << "}" << newline;
             break;
 
         case value_t::TYPE_ARRAY:
             array_last_element = std::get<std::vector<json_t*>>(m_value).back();
 
-            ss << "[";
+            ss << add_indentation(level, indentation) << "[" << newline;
+
+            ++level;
 
             for (const auto& e : std::get<std::vector<json_t*>>(m_value))
             {
-                ss << e->to_string();
+                ss << add_indentation(level, indentation) << e->to_string(indent, level);
 
                 if (e != array_last_element)
                 {
-                    ss << ",";
+                    ss << "," << newline;
                 }
             }
+            
+            --level;
 
-            ss << "]";
+            ss << "]" << newline;
             break;
 
         case value_t::TYPE_NULL:
@@ -109,6 +131,19 @@ std::string json_t::to_string()
         case value_t::TYPE_STRING:
             ss << "\"" << std::get<std::string>(m_value) << "\"";
             break;
+    }
+
+    return ss.str();
+}
+
+
+std::string json_t::add_indentation(int level, std::string indentation)
+{
+    std::stringstream ss;
+
+    for (int i = 0; i < level; ++i)
+    {
+        ss << indentation;
     }
 
     return ss.str();
