@@ -23,7 +23,7 @@ class json_t
         json_t(std::vector<json_t*> val);
         json_t(std::map<std::string, json_t*> val);
         json_t& operator[](std::string key);
-        std::string to_string(int indent = 0, int level = 0);
+        std::string to_string(int indent = 0, int level = 0, bool ignoreIndent = false);
         std::string add_indentation(int level, std::string indentation);
         // friend std::ostream& operator<<(std::ostream& stream, const Value& val)
         // {
